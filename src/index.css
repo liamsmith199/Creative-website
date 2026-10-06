@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+/* Lenis' own stylesheet (its package exports don't expose the .css path). */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------
+   Type system
+   Mark:    Unbounded - wide, soft-cornered caps. Only ever used for the
+            wordmark and big numerals; at light weights it sits in front
+            of the penguin the way a toy's printed label would.
+   Display: Satoshi - headings, manifesto, card titles.
+   Text:    Inter, optical-size aware, for nav / body / UI.
+   Every step carries its own leading and tracking.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-mark: "Unbounded", "Satoshi", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Satoshi", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Sampled off the renders so canvas edges and section grounds disappear
+     into the footage. */
+  --color-cobalt: #0f5afe;
+  --color-cobalt-deep: #0047ee;
+  --color-cobalt-ink: #062a8c;
+  --color-ink: #000000;
+  --color-ink-soft: #0b0b0d;
+  /* The knit's off-white and the goggles' orange. Orange is the only
+     accent: buttons, the odd numeral, the focus ring. Black text on it
+     runs ~8:1. */
+  --color-frost: #f4f1ea;
+  --color-goggle: #ff7a1a;
+
+  --text-display: clamp(2.25rem, 5.2vw, 5rem);
+  --text-display--line-height: 0.98;
+  --text-display--letter-spacing: -0.035em;
+
+  --text-manifesto: clamp(1.1875rem, 2.25vw, 2.25rem);
+  --text-manifesto--line-height: 1.2;
+  --text-manifesto--letter-spacing: -0.02em;
+
+  --text-row: clamp(1.5rem, 3.1vw, 2.875rem);
+  --text-row--line-height: 1.02;
+  --text-row--letter-spacing: -0.03em;
+
+  --text-card: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  --text-card--line-height: 1.2;
+  --text-card--letter-spacing: -0.012em;
+
+  --text-body: clamp(0.9375rem, 1.05vw, 1.0625rem);
+  --text-body--line-height: 1.6;
+  --text-body--letter-spacing: -0.011em;
+
+  --text-nav: 0.8125rem;
+  --text-nav--line-height: 1;
+  --text-nav--letter-spacing: -0.005em;
+
+  /* Set uppercase. */
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.3;
+  --text-micro--letter-spacing: 0.14em;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    background: var(--color-ink);
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-goggle);
+    color: #000;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-goggle);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  .h-screen-s {
+    height: 100svh;
+  }
+
+  /* Frosted ice. The inner top highlight and the cool bottom shade are what
+     make a white rectangle read as a block of ice rather than a card. */
+  .ice {
+    background:
+      linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(233 241 255 / 0.9));
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 1),
+      inset 0 -10px 18px -12px rgb(15 90 254 / 0.35),
+      0 18px 40px -18px rgb(3 20 90 / 0.55);
+    border: 1px solid rgb(255 255 255 / 0.7);
+  }
+
+  /* Frost that sits over an ice block's copy until it thaws: milky white,
+     frost crystals from a turbulence filter, blurred glass behind. */
+  .frost {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(120% 90% at 20% 10%, rgb(255 255 255 / 0.95), rgb(226 236 255 / 0.9));
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  /* Below-the-fold blocks rise into place once, the first time they are seen. */
+  [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition:
+      opacity 0.9s cubic-bezier(0.2, 0.7, 0.1, 1),
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+  [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+  /* Picture frames open upward like a shutter instead of fading. */
+  [data-reveal="clip"] {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(22% 0 0 0 round 24px);
+    transition: clip-path 1.2s cubic-bezier(0.2, 0.7, 0.1, 1);
+  }
+  [data-reveal="clip"].is-in {
+    clip-path: inset(0 0 0 0 round 24px);
+  }
+
+  .marquee-track {
+    animation: marquee 38s linear infinite;
+  }
+
+  .spin-slow {
+    animation: spin 22s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track,
+    .spin-slow {
+      animation: none;
+    }
+    [data-reveal] {
+      transform: none;
+    }
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
