@@ -6,7 +6,7 @@ import {ParallaxImage} from './ParallaxImage';
 
 type Status = 'idle' | 'invalid' | 'sent';
 
-/** Rotating members-only sticker built around the penguin's face. */
+/** Rotating club sticker built around the leash's paw-print tag. */
 function Sticker({className = ''}: {className?: string}) {
   const id = useId();
   return (
@@ -21,7 +21,7 @@ function Sticker({className = ''}: {className?: string}) {
         </text>
       </svg>
       <img
-        src={`${import.meta.env.BASE_URL}media/penguin-face.webp`}
+        src={`${import.meta.env.BASE_URL}media/paw.webp`}
         alt=""
         width={320}
         height={320}
@@ -33,9 +33,9 @@ function Sticker({className = ''}: {className?: string}) {
 }
 
 /**
- * Final beat: the penguin holds the freezer door open. On wide screens the
- * scene fills the section with the copy and form over its empty left half;
- * the members-only sticker is slapped on the door itself.
+ * Final beat: the leash, front and centre. On wide screens the scene fills
+ * the section with the copy, call to action and form over its empty left
+ * half; the club sticker is slapped beside the leash.
  */
 export function Contact() {
   const markRef = useFitText<HTMLSpanElement>();
@@ -54,7 +54,7 @@ export function Contact() {
     const data = new FormData(form);
     const from = String(data.get('email'));
     const body = String(data.get('message'));
-    const subject = encodeURIComponent('Something is overheating');
+    const subject = encodeURIComponent('My dog wants to be a Doogler');
     const text = encodeURIComponent(`${body}\n\n— ${from}`);
     window.location.href = `mailto:${brand.email}?subject=${subject}&body=${text}`;
     setStatus('sent');
@@ -66,11 +66,10 @@ export function Contact() {
       <div className="relative md:absolute md:inset-0">
         <ParallaxImage
           src={contact.image}
-          alt="The penguin leaning on an open freezer door, cold mist rolling out, beckoning you in."
+          alt="The Google Doogler Baja Dog Leash in bright green, red, yellow and blue stripes with a padded handle and silver clip."
           width={2560}
           height={1434}
           strength={30}
-          video={contact.video}
           className="aspect-[16/11] md:aspect-auto md:size-full"
           imgClassName="object-[82%_50%] md:object-[75%_50%]"
         />
@@ -85,6 +84,15 @@ export function Contact() {
             {contact.lede}
           </p>
 
+          <a
+            href={brand.shopUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 text-nav font-semibold text-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
+          >
+            Get the Doogler Leash <span aria-hidden="true">→</span>
+          </a>
+
           <form noValidate onSubmit={onSubmit} className="mt-8 space-y-3" aria-describedby="contact-status">
             <label className="block">
               <span className="sr-only">Your email</span>
@@ -93,18 +101,18 @@ export function Contact() {
                 type="email"
                 required
                 autoComplete="email"
-                placeholder="you@company.com"
+                placeholder="you@email.com"
                 onInput={() => status !== 'idle' && setStatus('idle')}
                 className="w-full rounded-2xl bg-white/14 px-5 py-4 text-body text-white ring-1 ring-white/30 outline-none backdrop-blur-md placeholder:text-white/60 focus:bg-white/20 focus:ring-2 focus:ring-white user-invalid:ring-goggle"
               />
             </label>
             <label className="block">
-              <span className="sr-only">What is overheating?</span>
+              <span className="sr-only">Tell us about your dog</span>
               <textarea
                 name="message"
                 required
                 rows={3}
-                placeholder="What's overheating? A launch, a rebuild, a workflow…"
+                placeholder="Tell us about your dog, or who you're gifting a leash to…"
                 onInput={() => status !== 'idle' && setStatus('idle')}
                 className="w-full resize-none rounded-2xl bg-white/14 px-5 py-4 text-body text-white ring-1 ring-white/30 outline-none backdrop-blur-md placeholder:text-white/60 focus:bg-white/20 focus:ring-2 focus:ring-white user-invalid:ring-goggle"
               />
@@ -114,20 +122,20 @@ export function Contact() {
                 type="submit"
                 className="rounded-full bg-goggle px-7 py-4 text-nav font-semibold text-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                Send it over
+                Join the club
               </button>
               <a href={`mailto:${brand.email}`} className="text-nav font-medium text-white/90 underline decoration-white/40 underline-offset-4 hover:decoration-white">
                 or write to {brand.email}
               </a>
             </div>
             <p id="contact-status" role="status" className="min-h-[1.25rem] text-[0.8125rem] text-white/90">
-              {status === 'invalid' && 'Add your email and a line about what needs cooling down.'}
+              {status === 'invalid' && 'Add your email and a line about your dog.'}
               {status === 'sent' && `Your mail app should be open with the message ready. If not, write to ${brand.email}.`}
             </p>
           </form>
         </div>
 
-        <h2 id="contact-title" className="-mx-1 mt-14 leading-none md:absolute md:inset-x-4 md:bottom-6 md:mx-0 lg:inset-x-6" aria-label="Stay cold">
+        <h2 id="contact-title" className="-mx-1 mt-14 leading-none md:absolute md:inset-x-4 md:bottom-6 md:mx-0 lg:inset-x-6" aria-label="Good dog">
           <span
             ref={markRef}
             aria-hidden="true"

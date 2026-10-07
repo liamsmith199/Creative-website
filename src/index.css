@@ -36,11 +36,10 @@ html.lenis body {
   --color-cobalt-ink: #062a8c;
   --color-ink: #000000;
   --color-ink-soft: #0b0b0d;
-  /* The knit's off-white and the goggles' orange. Orange is the only
-     accent: buttons, the odd numeral, the focus ring. Black text on it
-     runs ~8:1. */
+  /* Off-white, and the leash's Baja yellow. Yellow is the only accent:
+     buttons, the odd numeral, the focus ring. Black text on it runs ~12:1. */
   --color-frost: #f4f1ea;
-  --color-goggle: #ff7a1a;
+  --color-goggle: #fbbc04;
 
   --text-display: clamp(2.25rem, 5.2vw, 5rem);
   --text-display--line-height: 0.98;

@@ -2,7 +2,6 @@ import {useEffect, useRef, type PointerEvent} from 'react';
 import {brand, hero, perks} from '../content';
 import {useFitText} from '../hooks/useFitText';
 import {useReducedMotion} from '../hooks/useReducedMotion';
-import {FRAME_COUNT, loadFrames, type FrameSet} from '../lib/frames';
 import {clamp, easeInQuad, easeOutCubic, lerp, pinProgress, range, smoothstep} from '../lib/math';
 import {onFrame} from '../lib/scroll';
 
@@ -10,8 +9,8 @@ import {onFrame} from '../lib/scroll';
  * Pinned hero. One scroll range drives the whole beat:
  *
  *   0.00 – 0.13  wordmark letters drop out of frame, left to right
- *   0.04 – 0.56  penguin walks off, the ice rises, it sits (frame scrub)
- *   0.52 – 0.72  "Everything, on ice." rises, then three ice blocks swing in,
+ *   0.04 – 0.56  the leash swings, shrinks and slides aside (canvas)
+ *   0.52 – 0.72  "Every walk, a little prouder." rises, then three frosted blocks swing in,
  *                thaw and catch a glint, then drift apart as you keep going
  *   last 100vh   the black manifesto sheet rises over the stage while the
  *                stage blurs, dims and sinks back
@@ -39,67 +38,32 @@ const TUMBLE = [-14, 9, -6, 12, 0, -10, 7, -12, 11];
 
 const COBALT = '#0f5afe';
 
-/** The clip's own frame rate. The playhead never moves slower than this. */
-const FPS = 24;
+/** Hero cut-out of the leash, painted to the canvas every frame it moves. */
+const LEASH_SRC = `${import.meta.env.BASE_URL}media/leash.webp`;
 
 /**
- * Where the penguin is across the clip, as a 0–1 share of frame width.
- * It stands centred, then walks right between ~1.5s and ~3.3s of the 8s clip
- * and settles on the cube around 76%. Used to keep it in shot on narrow
- * screens, where the 16:9 footage is heavily cropped.
+ * Paints the leash, in CSS pixels, into whatever transform `ctx` already
+ * has. At t = 0 it hangs centred and large; by t = 1 it has swung, shrunk and
+ * slid aside (right on wide screens, down on phones) to make room for copy.
  */
-const focalX = (t: number) => lerp(0.5, 0.76, smoothstep(range(t, 0.18, 0.42)));
-
-type Geometry = {x: number; y: number; w: number; h: number};
-
-function fitFrame(vw: number, vh: number, iw: number, ih: number, t: number): Geometry {
-  const viewAspect = vw / vh;
-  const frameAspect = iw / ih;
-  let s: number;
-  if (viewAspect >= frameAspect) {
-    // Wider than the footage: keep head and sneakers, let the sides fade out.
-    s = (vh / ih) * 1.04;
-  } else if (viewAspect >= 1) {
-    s = vh / ih;
-  } else {
-    // Portrait: start tight on the standing penguin (36% of the frame width),
-    // then pull back to 60% as it walks so the cube fits and the top of the
-    // screen clears for the ice blocks. The footage floats above the bottom
-    // edge with its top feathered into the ground.
-    const share = lerp(0.36, 0.6, smoothstep(range(t, 0.15, 0.5)));
-    s = Math.min(vh / ih, vw / (iw * share));
-  }
-  const w = iw * s;
-  const h = ih * s;
-  const x = w >= vw ? clamp(vw / 2 - focalX(t) * w, vw - w, 0) : (vw - w) / 2;
-  const y = h >= vh ? (vh - h) / 2 : vh - h - vh * 0.03;
-  return {x, y, w, h};
-}
-
-/** Fades any footage edge that falls inside the viewport into the cobalt ground. */
-function featherEdges(ctx: CanvasRenderingContext2D, g: Geometry, vw: number, vh: number) {
-  const f = Math.min(g.w, g.h) * 0.1;
-  const clear = 'rgba(15, 90, 254, 0)';
-  const edge = (x0: number, y0: number, x1: number, y1: number, rx: number, ry: number, rw: number, rh: number) => {
-    const grad = ctx.createLinearGradient(x0, y0, x1, y1);
-    grad.addColorStop(0, COBALT);
-    grad.addColorStop(1, clear);
-    ctx.fillStyle = grad;
-    ctx.fillRect(rx, ry, rw, rh);
-  };
-  if (g.x > 0.5) edge(g.x, 0, g.x + f, 0, g.x, 0, f, vh);
-  if (g.x + g.w < vw - 0.5) edge(g.x + g.w, 0, g.x + g.w - f, 0, g.x + g.w - f, 0, f, vh);
-  if (g.y > 0.5) edge(0, g.y, 0, g.y + f, 0, g.y, vw, f);
-  if (g.y + g.h < vh - 0.5) edge(0, g.y + g.h, 0, g.y + g.h - f, 0, g.y + g.h - f, vw, f);
-}
-
-/** Paints one frame, in CSS pixels, into whatever transform `ctx` already has. */
 function drawScene(ctx: CanvasRenderingContext2D, vw: number, vh: number, img: HTMLImageElement, t: number) {
   ctx.fillStyle = COBALT;
   ctx.fillRect(0, 0, vw, vh);
-  const g = fitFrame(vw, vh, img.naturalWidth, img.naturalHeight, t);
-  ctx.drawImage(img, g.x, g.y, g.w, g.h);
-  featherEdges(ctx, g, vw, vh);
+  const wide = vw >= 768;
+  const e = smoothstep(t);
+  const base = wide ? Math.min(vw * 0.62, vh * 1.5) : vw * 0.9;
+  const w = base * lerp(1, wide ? 0.82 : 0.86, e);
+  const h = w * (img.naturalHeight / img.naturalWidth);
+  const cx = vw * lerp(0.5, wide ? 0.72 : 0.5, e);
+  const cy = vh * lerp(wide ? 0.42 : 0.44, wide ? 0.5 : 0.72, e);
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(((lerp(-9, 5, e) + Math.sin(t * Math.PI * 3) * 2) * Math.PI) / 180);
+  ctx.shadowColor = 'rgba(0, 20, 80, 0.45)';
+  ctx.shadowBlur = 40;
+  ctx.shadowOffsetY = 26;
+  ctx.drawImage(img, -w / 2, -h / 2, w, h);
+  ctx.restore();
 }
 
 /** Pointer tilt for the ice blocks — fine pointers only, eased by CSS. */
@@ -133,16 +97,18 @@ export function IceStage() {
   const reducedRef = useRef(reduced);
   reducedRef.current = reduced;
 
-  const frames = useRef<(HTMLImageElement | undefined)[]>(new Array(FRAME_COUNT));
+  const leash = useRef<HTMLImageElement | undefined>(undefined);
   const dirty = useRef(true);
 
-  // Stream the frame sequence in — the lighter set on phones.
+  // One picture, loaded once.
   useEffect(() => {
-    const set: FrameSet = window.matchMedia('(max-width: 767px)').matches ? 'm' : 'd';
-    return loadFrames(set, (i, img) => {
-      frames.current[i] = img;
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = LEASH_SRC;
+    img.onload = () => {
+      leash.current = img;
       dirty.current = true;
-    });
+    };
   }, []);
 
   // Keep the canvas backing store in step with its CSS size.
@@ -169,20 +135,10 @@ export function IceStage() {
     const lo = document.createElement('canvas');
     const loCtx = lo.getContext('2d', {alpha: false})!;
 
-    const nearestLoaded = (i: number) => {
-      for (let d = 0; d < FRAME_COUNT; d++) {
-        const a = frames.current[i - d];
-        if (a) return a;
-        const b = frames.current[i + d];
-        if (b) return b;
-      }
-      return undefined;
-    };
-
     let playhead = 0;
     let lastTime = 0;
     let lastP = -1;
-    let lastFrame: HTMLImageElement | undefined;
+    let lastFrame = -1;
     let lastBlur = -1;
 
     const paint = (img: HTMLImageElement, t: number, blur: number) => {
@@ -220,25 +176,25 @@ export function IceStage() {
       const {p, rect, vh} = pinProgress(root);
       if (rect.bottom < 0) return;
 
-      // The playhead chases the scroll position but never plays slower than
-      // the footage itself, so small scrolls read as real video instead of
-      // single-frame steps, and big flings still catch up within a beat.
-      const target = range(p, ...T.frames) * (FRAME_COUNT - 1);
+      // The playhead eases towards the scroll position, so the leash glides
+      // rather than jumping when the wheel is flicked.
+      const target = range(p, ...T.frames);
       const diff = target - playhead;
       if (reducedRef.current) {
         playhead = target;
-      } else if (Math.abs(diff) > 0.001) {
-        const step = Math.max(FPS * 1.25, Math.abs(diff) * 3.2) * dt;
-        playhead = Math.abs(diff) <= step ? target : playhead + Math.sign(diff) * step;
+      } else if (Math.abs(diff) > 0.0005) {
+        playhead += diff * Math.min(1, dt * 7);
+      } else {
+        playhead = target;
       }
 
       const sheetStart = 1 - vh / Math.max(1, rect.height - vh);
       const x = range(p, sheetStart, 1);
 
-      const img = nearestLoaded(Math.round(playhead));
-      if (img && (dirty.current || img !== lastFrame || Math.abs(x - lastBlur) > 0.0005)) {
-        paint(img, playhead / (FRAME_COUNT - 1), x);
-        lastFrame = img;
+      const img = leash.current;
+      if (img && (dirty.current || playhead !== lastFrame || Math.abs(x - lastBlur) > 0.0005)) {
+        paint(img, playhead, x);
+        lastFrame = playhead;
         lastBlur = x;
         dirty.current = false;
       }

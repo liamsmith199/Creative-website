@@ -1,9 +1,8 @@
 import {useEffect, useMemo, useRef} from 'react';
 import {manifesto, marquee} from '../content';
-import {useReducedMotion} from '../hooks/useReducedMotion';
 import {clamp, easeOutCubic, lerp, pinProgress, range} from '../lib/math';
 import {onFrame} from '../lib/scroll';
-import {Snowflake} from './Logo';
+import {Paw} from './Logo';
 
 /**
  * The black sheet. It pulls itself up by one viewport so it slides over the
@@ -18,33 +17,13 @@ type Word = {text: string; em: boolean};
 
 export function Manifesto() {
   const rootRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const wordRefs = useRef<HTMLSpanElement[]>([]);
   const lastPos = useRef(-1);
-  const reduced = useReducedMotion();
 
   const words = useMemo<Word[]>(
     () => manifesto.flatMap((run) => run.text.split(' ').map((text) => ({text, em: !!run.em}))),
     [],
   );
-
-  // Only decode video while the sheet is actually visible.
-  useEffect(() => {
-    const video = videoRef.current!;
-    if (reduced) {
-      video.pause();
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) void video.play().catch(() => {});
-        else video.pause();
-      },
-      {threshold: 0.05},
-    );
-    io.observe(video);
-    return () => io.disconnect();
-  }, [reduced]);
 
   useEffect(
     () =>
@@ -92,20 +71,18 @@ export function Manifesto() {
         {/* Grab handle, as on a bottom sheet. */}
         <div aria-hidden="true" className="absolute top-3 left-1/2 z-20 h-1 w-12 -translate-x-1/2 rounded-full bg-white/70" />
 
-        {/* Plunge loop. Full bleed on wide screens (its left half is empty
-            black, made for type); a band across the top on phones. */}
+        {/* The leash on black. Full bleed on wide screens (its left half is
+            empty, made for type); a band across the top on phones. */}
         <div className="absolute inset-x-0 top-0 h-[38svh] md:inset-0 md:h-auto">
-          <video
-            ref={videoRef}
+          <img
             className="size-full object-cover object-[78%_50%] md:object-[70%_50%]"
-            src={`${import.meta.env.BASE_URL}media/plunge.mp4`}
-            poster={`${import.meta.env.BASE_URL}media/plunge-poster.jpg`}
-            muted
-            loop
-            playsInline
-            preload="metadata"
+            src={`${import.meta.env.BASE_URL}media/story/manifesto.webp`}
+            alt=""
+            width={1920}
+            height={1080}
+            loading="lazy"
+            decoding="async"
             aria-hidden="true"
-            tabIndex={-1}
           />
           <div className="absolute inset-0 bg-linear-to-t from-ink via-transparent to-transparent md:bg-linear-to-r md:from-ink md:via-ink/40 md:to-transparent" />
         </div>
@@ -113,8 +90,8 @@ export function Manifesto() {
         <div className="relative z-10 flex h-full flex-col px-4 pt-[36svh] pb-[4.5rem] sm:px-6 md:justify-center md:pt-24 md:pb-28 lg:px-8">
           <div className="max-w-[min(46rem,52vw)] max-md:max-w-none">
             <p id="manifesto-title" className="flex items-center gap-2 text-micro font-semibold text-goggle uppercase">
-              <Snowflake className="size-3.5" />
-              Manifesto
+              <Paw className="size-3.5" />
+              The Doogler story
             </p>
             <p className="mt-5 font-display text-manifesto font-medium text-white [perspective:700px]">
               {words.map((w, i) => (
@@ -149,7 +126,7 @@ export function Manifesto() {
             {[...marquee, ...marquee].map((item, i) => (
               <li key={i} className="flex items-center gap-10 whitespace-nowrap" aria-hidden={i >= marquee.length}>
                 {item}
-                <Snowflake className="size-3 text-goggle" />
+                <Paw className="size-3 text-goggle" />
               </li>
             ))}
           </ul>

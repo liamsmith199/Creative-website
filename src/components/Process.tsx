@@ -6,21 +6,20 @@ import {onFrame} from '../lib/scroll';
 import {ScrubCanvas} from './ScrubCanvas';
 
 /**
- * "How it works", told as a cooling curve. The section pins while a giant
- * readout counts down from boiling to below freezing and a thermometer
- * drains beside it. The room cools with it: an ember glow fades to an icy
- * cobalt, sparks rising off the floor slow, turn white and start falling as
- * snow. Meanwhile the three steps slide through on a 3D carousel, the one in
- * front ringed in the current temperature's colour.
+ * "How it works", told as a walk. The section pins while a giant readout
+ * counts the steps from 0 to 5,000 and a step meter fills beside it. The
+ * light shifts with it through the leash's stripes, red to yellow to green,
+ * and the confetti rising off the floor slows, softens and starts drifting
+ * down. Meanwhile the three steps slide through on a 3D carousel, the one in
+ * front ringed in the current colour.
  *
  * The carousel doesn't move evenly: each card holds in front for a while,
- * and step 2 holds longest — its extinguisher clip plays with the scroll
- * for the whole stay (the temperature falls fastest right then, too).
+ * and step 2 holds longest (the count climbs fastest right then, too).
  */
 
 const SECTION_VH = 580;
-const HOT = 212;
-const COLD = -4;
+const START = 0;
+const GOAL = 5000;
 
 /** Scroll → temperature and carousel windows, as shares of the pin. */
 const W = {
@@ -40,27 +39,28 @@ function carousel(u: number) {
   return 2;
 }
 
-/** Extinguisher clip plays from as the card arrives to as it leaves. */
+/** A step-2 clip, if one is added, plays from as the card arrives to as it leaves. */
 const HEAT_SCRUB = [0.17, 0.77] as const;
 
 type RGB = [number, number, number];
-const EMBER: RGB = [255, 122, 26];
-const FROST: RGB = [244, 241, 234];
-const ICE: RGB = [15, 90, 254];
-const BG_HOT: RGB = [22, 6, 0];
-const BG_MID: RGB = [4, 4, 6];
-const BG_COLD: RGB = [1, 10, 38];
+// The leash's Baja stripes: red, yellow, green.
+const EMBER: RGB = [234, 67, 53];
+const FROST: RGB = [251, 188, 4];
+const ICE: RGB = [52, 168, 83];
+const BG_HOT: RGB = [24, 6, 4];
+const BG_MID: RGB = [8, 7, 4];
+const BG_COLD: RGB = [2, 18, 9];
 
 const mix = (a: RGB, b: RGB, t: number): RGB => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
 /** Three-stop ramp: a at 0, b at 0.5, c at 1. */
 const ramp = (a: RGB, b: RGB, c: RGB, t: number) => (t < 0.5 ? mix(a, b, t * 2) : mix(b, c, (t - 0.5) * 2));
 const rgb = ([r, g, b]: RGB, alpha = 1) => `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${alpha})`;
 
-function statusFor(temp: number) {
-  if (temp > 150) return 'Boiling over';
-  if (temp > 45) return 'Cooling fast';
-  if (temp > 14) return 'Freezing';
-  return 'Stone cold';
+function statusFor(steps: number) {
+  if (steps < 500) return 'Leash on';
+  if (steps < 2000) return 'Out the door';
+  if (steps < 4500) return 'Around the block';
+  return 'Good dog';
 }
 
 type Particle = {x: number; y: number; speed: number; size: number; phase: number};
@@ -132,7 +132,7 @@ export function Process() {
       const t = smoothstep(range(p, ...W.temp));
       const heat = ramp(EMBER, FROST, ICE, t);
 
-      // --- Sparks → snow. Runs every frame while on screen. ---
+      // --- Confetti rises, then drifts down. Runs every frame while on screen. ---
       const cw = canvas.clientWidth;
       const ch = canvas.clientHeight;
       const dpr = canvas.width / Math.max(1, cw);
@@ -152,7 +152,7 @@ export function Process() {
           if (pt.x < 0) pt.x += 1;
           if (pt.x > 1) pt.x -= 1;
         }
-        // Embers flicker small and bright; snow is larger and softer.
+        // Early on it flickers small and bright; later it is larger and softer.
         const flicker = t < 0.5 ? 0.55 + 0.45 * Math.sin(time * 0.012 + pt.phase * 3) : 0.75;
         ctx.globalAlpha = lerp(0.9, 0.55, t) * flicker;
         const r = pt.size * lerp(1.2, 2.2, t);
@@ -172,13 +172,13 @@ export function Process() {
       stage.style.backgroundColor = rgb(ramp(BG_HOT, BG_MID, BG_COLD, t));
 
       // --- Readout + thermometer. ---
-      const temp = Math.round(lerp(HOT, COLD, t));
+      const temp = Math.round(lerp(START, GOAL, t) / 10) * 10;
       if (temp !== lastTemp) {
         lastTemp = temp;
-        tempRef.current!.textContent = `${temp < 0 ? '−' : ''}${Math.abs(temp)}°`;
+        tempRef.current!.textContent = temp.toLocaleString('en-US');
         statusRef.current!.textContent = statusFor(temp);
       }
-      mercuryRef.current!.style.transform = `scaleY(${lerp(1, 0.06, t)})`;
+      mercuryRef.current!.style.transform = `scaleY(${lerp(0.06, 1, t)})`;
 
       // --- Carousel. ---
       const n = cardRefs.current.length;
@@ -253,8 +253,8 @@ export function Process() {
               style={{background: 'var(--heat, #ff7a1a)'}}
             />
             <span className="absolute -bottom-3 left-1/2 size-7 -translate-x-1/2 rounded-full ring-1 ring-white/20" style={{background: 'var(--heat, #ff7a1a)'}} />
-            <span className="absolute top-0 left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">212°F</span>
-            <span className="absolute top-[82%] left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">32°F</span>
+            <span className="absolute top-0 left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">5,000</span>
+            <span className="absolute top-[48%] left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">2,500</span>
           </div>
           <div aria-live="off">
             <span
@@ -262,12 +262,12 @@ export function Process() {
               className="block font-mark text-[clamp(4.25rem,9vw,9rem)] leading-[0.82] font-light tracking-[-0.04em] tabular-nums"
               style={{color: 'var(--heat, #ff7a1a)'}}
             >
-              212°
+              0
             </span>
             <span className="mt-3 flex items-center gap-2 text-micro font-semibold text-white/80 uppercase">
               <span className="size-2 rounded-full" style={{background: 'var(--heat, #ff7a1a)'}} />
-              <span ref={statusRef}>Boiling over</span>
-              <span className="text-white/40">· Fahrenheit</span>
+              <span ref={statusRef}>Leash on</span>
+              <span className="text-white/40">· Steps walked</span>
             </span>
           </div>
         </div>

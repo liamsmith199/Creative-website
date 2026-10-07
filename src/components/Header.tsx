@@ -1,7 +1,7 @@
 import {useEffect, useState, type MouseEvent} from 'react';
 import {brand, nav} from '../content';
 import {scrollToHash} from '../lib/scroll';
-import {Snowflake} from './Logo';
+import {Paw} from './Logo';
 
 function go(e: MouseEvent<HTMLAnchorElement>, then?: () => void) {
   const hash = e.currentTarget.getAttribute('href');
@@ -25,8 +25,8 @@ export function Header() {
     <header className="fixed inset-x-0 top-0 z-50 text-white">
       <div className="flex items-start justify-between gap-6 px-4 pt-4 sm:px-6 sm:pt-5 lg:px-8">
         <a href="#top" onClick={(e) => go(e)} className="group flex items-start gap-3" aria-label={`${brand.name} — back to top`}>
-          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-cobalt transition-transform duration-500 group-hover:rotate-60">
-            <Snowflake className="size-5" />
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-cobalt transition-transform duration-500 group-hover:rotate-12">
+            <Paw className="size-5" />
           </span>
           <span className="hidden font-display text-[0.6875rem] leading-[1.25] font-medium text-white/85 sm:block">
             {brand.tagline.map((line) => (

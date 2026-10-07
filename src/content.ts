@@ -1,38 +1,42 @@
 /**
- * Every word on the page lives here. Brand name, contact address and copy are
- * working placeholders — swap them in one place.
+ * Every word on the page lives here. Relaunch copy for the Google Doogler
+ * Baja Dog Leash, written for first-time city dog parents.
  */
 
 // Public assets resolve under the GitHub Pages project path (vite.config.ts `base`).
 const base = import.meta.env.BASE_URL;
 
+/** A still, or a scroll-played frame sequence (none on this page yet). */
+type Scene = {image: string; scrub?: {dir: string; count: number}};
+
 export const brand = {
-  name: 'Cold Club',
-  wordmark: 'COLD CLUB',
-  tagline: ['Design, build &', 'automation studio.', 'We handle the heat.'],
-  email: 'hello@coldclub.studio',
+  name: 'Doogler',
+  wordmark: 'DOOGLER',
+  tagline: ['The Baja Dog Leash.', 'Made for city walks.', 'Every dog is a Doogler.'],
+  email: 'hello@doogler.dog',
+  shopUrl: 'https://shop.merch.google/',
 };
 
 export const nav = [
-  {label: 'Manifesto', href: '#manifesto'},
-  {label: 'Menu', href: '#services'},
-  {label: 'Process', href: '#process'},
-  {label: 'Contact', href: '#contact'},
+  {label: 'The story', href: '#manifesto'},
+  {label: 'Details', href: '#services'},
+  {label: 'The walk', href: '#process'},
+  {label: 'Get yours', href: '#contact'},
 ];
 
 export const hero = {
-  caption: 'Design · Build · Automate',
-  scrollHint: 'Scroll to chill',
+  caption: 'Google Doogler Baja Dog Leash',
+  scrollHint: 'Scroll for walkies',
 };
 
-/** The three blocks that stack up beside the ice cube. */
+/** The three blocks that stack up beside the leash. */
 export const perks = {
-  eyebrow: 'Why the club',
-  heading: ['Everything,', 'on ice.'],
+  eyebrow: 'Why dog parents love it',
+  heading: ['Every walk,', 'a little prouder.'],
   items: [
-    {title: 'Launch-ready in weeks', note: 'Sites and products, designed and shipped.'},
-    {title: 'Automations on autopilot', note: 'The busywork runs while you sleep.'},
-    {title: 'One crew, zero hand-offs', note: 'Design, code and ops under one roof.'},
+    {title: 'Baja stripes that pop', note: 'Bright enough to spot across the dog park.'},
+    {title: 'Padded comfort handle', note: 'Soft in your hand, even on the long loop.'},
+    {title: 'Sturdy swivel clip', note: 'Stays put through every squirrel sighting.'},
   ],
 };
 
@@ -42,114 +46,106 @@ export const perks = {
  * read as one sentence.
  */
 export const manifesto: {text: string; em?: boolean}[] = [
-  {text: 'Most studios run hot. Missed deadlines, bloated retainers, forty-tab workflows.'},
-  {text: 'We run cold.', em: true},
-  {text: 'Cold Club is a small crew of'},
-  {text: 'designers, engineers and automation nerds', em: true},
-  {text: 'who take the overheated parts of your business —'},
-  {text: 'the launch, the rebuild, the busywork', em: true},
-  {text: '— and bring them down to'},
-  {text: 'room temperature.', em: true},
-  {text: 'You hand it over.'},
-  {text: 'We handle the heat.', em: true},
-  {text: 'You sit back with something iced and watch it'},
-  {text: 'ship.', em: true},
+  {text: 'At Google, the dogs come to work too. Inside the company they have a name:'},
+  {text: 'Dooglers.', em: true},
+  {text: 'They nap under desks, crash meetings and lead the lunchtime walk.'},
+  {text: 'Now the leash made for them', em: true},
+  {text: 'is ready for your best friend. Bright Baja stripes, a padded grip and a clip you can trust,'},
+  {text: 'built for city sidewalks', em: true},
+  {text: 'and the dog who owns them. Because every dog who is loved like family'},
+  {text: 'is already a Doogler.', em: true},
 ];
 
-export const marquee = [
-  'Brand systems',
-  'Websites',
-  'Web apps',
-  'Workflow automation',
-  'AI agents',
-  'Motion & 3D',
-  'Mascots',
-];
+export const marquee = ['Baja stripes', 'Padded handle', 'Swivel clip', 'Paw-print tag', 'Gift ready', '#MyDoogler'];
 
-export const services = {
-  eyebrow: 'The menu',
-  heading: 'Pick your poison.',
-  lede: 'Order one thing or the whole tray. Every project gets the same crew from brief to launch.',
+export const services: {
+  eyebrow: string;
+  heading: string;
+  lede: string;
+  items: (Scene & {title: string; caption: string; body: string; tags: string[]})[];
+} = {
+  eyebrow: 'The details',
+  heading: 'Made for the walk.',
+  lede: 'Every part of the Doogler Leash is designed for dog parents who walk a lot and post even more.',
   items: [
     {
-      title: 'Brand & identity',
-      image: `${base}media/story/sv1-brand.webp`,
-      caption: 'Knitting your brand, stitch by stitch.',
-      body: 'Names, marks, type and colour systems — and a mascot, if you are brave.',
-      tags: ['Naming', 'Logo', 'Systems'],
+      title: 'Baja stripes',
+      image: `${base}media/story/sv1-stripes.webp`,
+      caption: 'Bright enough for every photo.',
+      body: 'Green, red, yellow and blue woven stripes in Google colors. It stands out on a busy sidewalk and looks great on your feed.',
+      tags: ['Bold color', 'Woven pattern', 'Photo ready'],
     },
     {
-      title: 'Websites',
-      image: `${base}media/story/sv2-web.webp`,
-      caption: 'Building the site. Still unbothered.',
-      body: 'Marketing sites with a pulse. Designed, built and launched end to end.',
-      tags: ['Design', 'React', 'CMS'],
+      title: 'Padded handle',
+      image: `${base}media/story/sv2-handle.webp`,
+      caption: 'Soft grip, long walks.',
+      body: 'A cushioned black handle that stays comfortable on the morning loop, the lunch break walk and the late-night stroll.',
+      tags: ['Comfort', 'No rope burn', 'All-day walks'],
     },
     {
-      title: 'Web apps & product',
-      image: `${base}media/story/sv3-app.webp`,
-      caption: 'Conducting the dashboard.',
-      body: 'Dashboards, portals and internal tools your team actually wants to open.',
-      tags: ['UX', 'Front end', 'APIs'],
+      title: 'Swivel clip',
+      image: `${base}media/story/sv3-clip.webp`,
+      caption: 'Clips on in one click.',
+      body: 'A sturdy metal snap hook that swivels with your dog, so the leash never twists when they spot a squirrel.',
+      tags: ['Metal hardware', 'Swivel', 'Secure'],
     },
     {
-      title: 'Workflow automation',
-      image: `${base}media/story/sv4-auto.webp`,
-      // Played by scrolling: the row pins while the clip runs (see Services).
-      scrub: {dir: `${base}frames/hammock`, count: 121},
-      caption: 'The busywork runs. The penguin naps.',
-      body: 'The repetitive stuff, wired together and running quietly in the background.',
-      tags: ['Integrations', 'AI agents', 'Ops'],
+      title: 'Paw-print tag',
+      image: `${base}media/story/sv4-tag.webp`,
+      caption: 'The Doogler badge of honor.',
+      body: 'A colorful paw-print label that quietly says your dog is part of the club. Fellow dog parents will ask about it.',
+      tags: ['Signature detail', 'Google colors'],
     },
     {
-      title: 'Motion & 3D',
-      image: `${base}media/story/sv5-motion.webp`,
-      caption: 'Rolling on the next scroll story.',
-      body: 'Characters, product films and scroll stories. Like the one you just scrolled.',
-      tags: ['Characters', 'Video', 'Scroll'],
+      title: 'New Doogler gift',
+      image: `${base}media/story/sv5-gift.webp`,
+      caption: 'The perfect "you got a puppy!" gift.',
+      body: 'Know someone who just adopted? The Doogler Leash is the gift they will use every single day.',
+      tags: ['Gift ready', 'New puppy', 'Starter kit'],
     },
   ],
 };
 
-export const process = {
+export const process: {
+  eyebrow: string;
+  heading: string;
+  steps: (Scene & {title: string; temp: string; caption: string; body: string})[];
+} = {
   eyebrow: 'How it works',
-  heading: 'Three steps. Zero sweat.',
+  heading: 'Three steps. One happy dog.',
   steps: [
     {
-      title: 'Drop it on us',
-      image: `${base}media/story/pr1-drop.webp`,
-      temp: '212°F',
-      caption: 'Your problem arrives on fire.',
-      body: 'One call, one brief. Tell us what is overheating and when it needs to cool down.',
+      title: 'Clip on',
+      image: `${base}media/story/pr1-clip.webp`,
+      temp: '0 steps',
+      caption: 'Leash on. Tail going.',
+      body: 'One click on the collar and your dog already knows what time it is.',
     },
     {
-      title: 'We handle the heat',
-      image: `${base}media/story/pr2-heat.webp`,
-      // Played by scrolling while this card holds in front (see Process).
-      scrub: {dir: `${base}frames/heat`, count: 121},
-      temp: '32°F',
-      caption: 'We put it out.',
-      body: 'Weekly drops you can click, not status decks. You see progress, not meetings.',
+      title: 'Head out',
+      image: `${base}media/story/pr2-walk.webp`,
+      temp: '2,500 steps',
+      caption: 'Around the block in style.',
+      body: 'The padded handle keeps you comfortable while the stripes turn heads on every corner.',
     },
     {
-      title: 'You stay cold',
-      image: `${base}media/story/pr3-cold.webp`,
-      temp: '−4°F',
-      caption: 'You float.',
-      body: 'We launch, hand over the keys, and stay on call for whatever comes next.',
+      title: 'Show off',
+      image: `${base}media/story/pr3-show.webp`,
+      temp: '5,000 steps',
+      caption: 'Post it with #MyDoogler.',
+      body: 'Snap your pup, tag #MyDoogler and join a community of proud city dog parents.',
     },
   ],
 };
 
 export const contact = {
-  eyebrow: 'The door is open',
-  wordmark: 'STAY COLD',
-  lede: 'Tell us what is overheating. Someone from the crew reads every message.',
-  sticker: 'COLD CLUB ✺ STAY COLD ✺ MEMBERS ONLY ✺ ',
-  image: `${base}media/story/ct-door-2560.webp`,
-  video: {src: `${base}media/loops/door.mp4`, poster: `${base}media/loops/door.webp`},
+  eyebrow: 'Join the club',
+  wordmark: 'GOOD DOG',
+  lede: 'Make your dog a Doogler. Get the Baja Dog Leash, or send one to a friend who just got a puppy.',
+  sticker: 'DOOGLER ✺ GOOD DOG CLUB ✺ #MYDOOGLER ✺ ',
+  image: `${base}media/story/ct-hero.webp`,
 };
 
 export const footer = {
-  note: 'Knitted in 3D. Served on ice.',
+  note: 'Every dog is a Doogler. Google Merchandise Store relaunch concept.',
 };

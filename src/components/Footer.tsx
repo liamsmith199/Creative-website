@@ -1,7 +1,7 @@
 import type {MouseEvent} from 'react';
 import {brand, footer, nav} from '../content';
 import {scrollToHash} from '../lib/scroll';
-import {Snowflake} from './Logo';
+import {Paw} from './Logo';
 
 const go = (e: MouseEvent<HTMLAnchorElement>) => {
   e.preventDefault();
@@ -14,7 +14,7 @@ export function Footer() {
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
           <span className="grid size-8 place-items-center rounded-full bg-white text-cobalt-ink">
-            <Snowflake className="size-4" />
+            <Paw className="size-4" />
           </span>
           <span className="text-nav font-medium">
             © {new Date().getFullYear()} {brand.name}. <span className="text-white/60">{footer.note}</span>
