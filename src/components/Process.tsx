@@ -6,9 +6,9 @@ import {onFrame} from '../lib/scroll';
 import {ScrubCanvas} from './ScrubCanvas';
 
 /**
- * "How it works", told as a walk. The section pins while a giant readout
- * counts the steps from 0 to 5,000 and a step meter fills beside it. The
- * light shifts with it through the leash's stripes, red to yellow to green,
+ * "How it works", told as one meal. The section pins while a giant readout
+ * counts the meal's calories up and a meter fills beside it. The light
+ * shifts with it through the macro colours, coral to amber to green,
  * and the confetti rising off the floor slows, softens and starts drifting
  * down. Meanwhile the three steps slide through on a 3D carousel, the one in
  * front ringed in the current colour.
@@ -19,7 +19,7 @@ import {ScrubCanvas} from './ScrubCanvas';
 
 const SECTION_VH = 580;
 const START = 0;
-const GOAL = 5000;
+const GOAL = process.goal;
 
 /** Scroll → temperature and carousel windows, as shares of the pin. */
 const W = {
@@ -43,10 +43,10 @@ function carousel(u: number) {
 const HEAT_SCRUB = [0.17, 0.77] as const;
 
 type RGB = [number, number, number];
-// The leash's Baja stripes: red, yellow, green.
-const EMBER: RGB = [234, 67, 53];
-const FROST: RGB = [251, 188, 4];
-const ICE: RGB = [52, 168, 83];
+// Macro colours: protein coral, carbs amber, then a fresh green once logged.
+const EMBER: RGB = [255, 122, 89];
+const FROST: RGB = [255, 197, 49];
+const ICE: RGB = [124, 211, 107];
 const BG_HOT: RGB = [24, 6, 4];
 const BG_MID: RGB = [8, 7, 4];
 const BG_COLD: RGB = [2, 18, 9];
@@ -56,11 +56,8 @@ const mix = (a: RGB, b: RGB, t: number): RGB => [lerp(a[0], b[0], t), lerp(a[1],
 const ramp = (a: RGB, b: RGB, c: RGB, t: number) => (t < 0.5 ? mix(a, b, t * 2) : mix(b, c, (t - 0.5) * 2));
 const rgb = ([r, g, b]: RGB, alpha = 1) => `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${alpha})`;
 
-function statusFor(steps: number) {
-  if (steps < 500) return 'Leash on';
-  if (steps < 2000) return 'Out the door';
-  if (steps < 4500) return 'Around the block';
-  return 'Good dog';
+function statusFor(value: number) {
+  return process.statuses.find(([max]) => value < max)?.[1] ?? '';
 }
 
 type Particle = {x: number; y: number; speed: number; size: number; phase: number};
@@ -172,7 +169,7 @@ export function Process() {
       stage.style.backgroundColor = rgb(ramp(BG_HOT, BG_MID, BG_COLD, t));
 
       // --- Readout + thermometer. ---
-      const temp = Math.round(lerp(START, GOAL, t) / 10) * 10;
+      const temp = Math.round(lerp(START, GOAL, t));
       if (temp !== lastTemp) {
         lastTemp = temp;
         tempRef.current!.textContent = temp.toLocaleString('en-US');
@@ -253,8 +250,8 @@ export function Process() {
               style={{background: 'var(--heat, #ff7a1a)'}}
             />
             <span className="absolute -bottom-3 left-1/2 size-7 -translate-x-1/2 rounded-full ring-1 ring-white/20" style={{background: 'var(--heat, #ff7a1a)'}} />
-            <span className="absolute top-0 left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">5,000</span>
-            <span className="absolute top-[48%] left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">2,500</span>
+            <span className="absolute top-0 left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">{GOAL.toLocaleString('en-US')}</span>
+            <span className="absolute top-[48%] left-7 text-[0.625rem] font-medium whitespace-nowrap text-white/50">{Math.round(GOAL / 2).toLocaleString('en-US')}</span>
           </div>
           <div aria-live="off">
             <span
@@ -266,8 +263,8 @@ export function Process() {
             </span>
             <span className="mt-3 flex items-center gap-2 text-micro font-semibold text-white/80 uppercase">
               <span className="size-2 rounded-full" style={{background: 'var(--heat, #ff7a1a)'}} />
-              <span ref={statusRef}>Leash on</span>
-              <span className="text-white/40">· Steps walked</span>
+              <span ref={statusRef}>{process.statuses[0][1]}</span>
+              <span className="text-white/40">· {process.unit}</span>
             </span>
           </div>
         </div>

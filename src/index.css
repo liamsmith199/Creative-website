@@ -31,15 +31,16 @@ html.lenis body {
 
   /* Sampled off the renders so canvas edges and section grounds disappear
      into the footage. */
-  --color-cobalt: #0f5afe;
-  --color-cobalt-deep: #0047ee;
-  --color-cobalt-ink: #062a8c;
+  /* CampusPlate green (token names kept from the template). */
+  --color-cobalt: #0b7a4b;
+  --color-cobalt-deep: #086a40;
+  --color-cobalt-ink: #04331f;
   --color-ink: #000000;
   --color-ink-soft: #0b0b0d;
-  /* Off-white, and the leash's Baja yellow. Yellow is the only accent:
-     buttons, the odd numeral, the focus ring. Black text on it runs ~12:1. */
+  /* Off-white, and fresh lime. Lime is the only accent: buttons, the odd
+     numeral, the focus ring. Black text on it runs ~16:1. */
   --color-frost: #f4f1ea;
-  --color-goggle: #fbbc04;
+  --color-goggle: #c8f169;
 
   --text-display: clamp(2.25rem, 5.2vw, 5rem);
   --text-display--line-height: 0.98;
@@ -108,11 +109,11 @@ html.lenis body {
      make a white rectangle read as a block of ice rather than a card. */
   .ice {
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(233 241 255 / 0.9));
+      linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(236 248 238 / 0.92));
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 1),
-      inset 0 -10px 18px -12px rgb(15 90 254 / 0.35),
-      0 18px 40px -18px rgb(3 20 90 / 0.55);
+      inset 0 -10px 18px -12px rgb(11 122 75 / 0.35),
+      0 18px 40px -18px rgb(2 40 20 / 0.5);
     border: 1px solid rgb(255 255 255 / 0.7);
   }
 
@@ -121,7 +122,7 @@ html.lenis body {
   .frost {
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      radial-gradient(120% 90% at 20% 10%, rgb(255 255 255 / 0.95), rgb(226 236 255 / 0.9));
+      radial-gradient(120% 90% at 20% 10%, rgb(255 255 255 / 0.95), rgb(230 245 232 / 0.9));
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
   }

@@ -9,8 +9,8 @@ import {onFrame} from '../lib/scroll';
  * Pinned hero. One scroll range drives the whole beat:
  *
  *   0.00 – 0.13  wordmark letters drop out of frame, left to right
- *   0.04 – 0.56  the leash swings, shrinks and slides aside (canvas)
- *   0.52 – 0.72  "Every walk, a little prouder." rises, then three frosted blocks swing in,
+ *   0.04 – 0.56  the plate and phone swing, shrink and slide aside (canvas)
+ *   0.52 – 0.72  "Snap a photo. Know your macros." rises, then three frosted blocks swing in,
  *                thaw and catch a glint, then drift apart as you keep going
  *   last 100vh   the black manifesto sheet rises over the stage while the
  *                stage blurs, dims and sinks back
@@ -36,13 +36,13 @@ const T = {
 /** Per-letter tumble as it falls — fixed so the drop looks the same every visit. */
 const TUMBLE = [-14, 9, -6, 12, 0, -10, 7, -12, 11];
 
-const COBALT = '#0f5afe';
+const COBALT = '#0B7A4B'; // CampusPlate green
 
-/** Hero cut-out of the leash, painted to the canvas every frame it moves. */
-const LEASH_SRC = `${import.meta.env.BASE_URL}media/leash.webp`;
+/** Hero cut-out of the plate and phone, painted to the canvas every frame it moves. */
+const LEASH_SRC = `${import.meta.env.BASE_URL}media/hero-plate.webp`;
 
 /**
- * Paints the leash, in CSS pixels, into whatever transform `ctx` already
+ * Paints the plate and phone, in CSS pixels, into whatever transform `ctx` already
  * has. At t = 0 it hangs centred and large; by t = 1 it has swung, shrunk and
  * slid aside (right on wide screens, down on phones) to make room for copy.
  */
@@ -51,17 +51,19 @@ function drawScene(ctx: CanvasRenderingContext2D, vw: number, vh: number, img: H
   ctx.fillRect(0, 0, vw, vh);
   const wide = vw >= 768;
   const e = smoothstep(t);
-  const base = wide ? Math.min(vw * 0.62, vh * 1.5) : vw * 0.9;
+  const ratio = img.naturalHeight / img.naturalWidth;
+  // Cap by height too, so the picture never runs into the wordmark or header.
+  const base = Math.min(wide ? Math.min(vw * 0.6, vh * 1.5) : vw * 0.9, (vh * (wide ? 0.58 : 0.34)) / ratio);
   const w = base * lerp(1, wide ? 0.82 : 0.86, e);
-  const h = w * (img.naturalHeight / img.naturalWidth);
+  const h = w * ratio;
   const cx = vw * lerp(0.5, wide ? 0.72 : 0.5, e);
-  const cy = vh * lerp(wide ? 0.42 : 0.44, wide ? 0.5 : 0.72, e);
+  const cy = vh * lerp(wide ? 0.42 : 0.44, wide ? 0.5 : 0.76, e);
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(((lerp(-9, 5, e) + Math.sin(t * Math.PI * 3) * 2) * Math.PI) / 180);
-  ctx.shadowColor = 'rgba(0, 20, 80, 0.45)';
-  ctx.shadowBlur = 40;
-  ctx.shadowOffsetY = 26;
+  ctx.shadowColor = 'rgba(0, 40, 20, 0.3)';
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetY = 18;
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
   ctx.restore();
 }
@@ -97,7 +99,7 @@ export function IceStage() {
   const reducedRef = useRef(reduced);
   reducedRef.current = reduced;
 
-  const leash = useRef<HTMLImageElement | undefined>(undefined);
+  const picture = useRef<HTMLImageElement | undefined>(undefined);
   const dirty = useRef(true);
 
   // One picture, loaded once.
@@ -106,7 +108,7 @@ export function IceStage() {
     img.decoding = 'async';
     img.src = LEASH_SRC;
     img.onload = () => {
-      leash.current = img;
+      picture.current = img;
       dirty.current = true;
     };
   }, []);
@@ -176,7 +178,7 @@ export function IceStage() {
       const {p, rect, vh} = pinProgress(root);
       if (rect.bottom < 0) return;
 
-      // The playhead eases towards the scroll position, so the leash glides
+      // The playhead eases towards the scroll position, so the plate glides
       // rather than jumping when the wheel is flicked.
       const target = range(p, ...T.frames);
       const diff = target - playhead;
@@ -191,7 +193,7 @@ export function IceStage() {
       const sheetStart = 1 - vh / Math.max(1, rect.height - vh);
       const x = range(p, sheetStart, 1);
 
-      const img = leash.current;
+      const img = picture.current;
       if (img && (dirty.current || playhead !== lastFrame || Math.abs(x - lastBlur) > 0.0005)) {
         paint(img, playhead, x);
         lastFrame = playhead;
@@ -312,7 +314,7 @@ export function IceStage() {
                   >
                     <div className="ice relative flex items-center gap-4 overflow-hidden rounded-[20px] p-3.5 text-black md:gap-5 md:p-5">
                       {/* Numeral set in its own little ice cube. */}
-                      <span className="grid size-12 shrink-0 place-items-center rounded-[13px] bg-linear-to-br from-[#dfe9ff] to-[#b9ceff] font-mark text-[0.9375rem] font-medium text-cobalt shadow-[inset_0_1px_0_#fff,inset_0_-6px_10px_-6px_rgb(15_90_254/0.45)] md:size-16 md:rounded-[16px] md:text-[1.125rem]">
+                      <span className="grid size-12 shrink-0 place-items-center rounded-[13px] bg-linear-to-br from-[#eefbe0] to-[#c8f169] font-mark text-[0.9375rem] font-medium text-cobalt shadow-[inset_0_1px_0_#fff,inset_0_-6px_10px_-6px_rgb(11_122_75/0.45)] md:size-16 md:rounded-[16px] md:text-[1.125rem]">
                         0{i + 1}
                       </span>
                       <span

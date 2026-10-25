@@ -1,7 +1,7 @@
 import {useEffect, useState, type MouseEvent} from 'react';
-import {brand, nav} from '../content';
+import {brand, contact, nav} from '../content';
 import {scrollToHash} from '../lib/scroll';
-import {Paw} from './Logo';
+import {Plate} from './Logo';
 
 function go(e: MouseEvent<HTMLAnchorElement>, then?: () => void) {
   const hash = e.currentTarget.getAttribute('href');
@@ -26,7 +26,7 @@ export function Header() {
       <div className="flex items-start justify-between gap-6 px-4 pt-4 sm:px-6 sm:pt-5 lg:px-8">
         <a href="#top" onClick={(e) => go(e)} className="group flex items-start gap-3" aria-label={`${brand.name} — back to top`}>
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-cobalt transition-transform duration-500 group-hover:rotate-12">
-            <Paw className="size-5" />
+            <Plate className="size-5" />
           </span>
           <span className="hidden font-display text-[0.6875rem] leading-[1.25] font-medium text-white/85 sm:block">
             {brand.tagline.map((line) => (
@@ -53,7 +53,7 @@ export function Header() {
             onClick={(e) => go(e)}
             className="ml-3 rounded-full bg-goggle px-5 py-2.5 text-nav font-semibold text-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
           >
-            Join the club
+            {contact.cta}
           </a>
         </nav>
 
@@ -102,7 +102,7 @@ export function Header() {
           onClick={(e) => go(e, () => setOpen(false))}
           className="mt-8 rounded-full bg-goggle py-4 text-center text-nav font-semibold text-black"
         >
-          Join the club
+          {contact.cta}
         </a>
       </div>
     </header>

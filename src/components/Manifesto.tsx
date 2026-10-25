@@ -2,7 +2,7 @@ import {useEffect, useMemo, useRef} from 'react';
 import {manifesto, marquee} from '../content';
 import {clamp, easeOutCubic, lerp, pinProgress, range} from '../lib/math';
 import {onFrame} from '../lib/scroll';
-import {Paw} from './Logo';
+import {Plate} from './Logo';
 
 /**
  * The black sheet. It pulls itself up by one viewport so it slides over the
@@ -71,7 +71,7 @@ export function Manifesto() {
         {/* Grab handle, as on a bottom sheet. */}
         <div aria-hidden="true" className="absolute top-3 left-1/2 z-20 h-1 w-12 -translate-x-1/2 rounded-full bg-white/70" />
 
-        {/* The leash on black. Full bleed on wide screens (its left half is
+        {/* The tray on black. Full bleed on wide screens (its left half is
             empty, made for type); a band across the top on phones. */}
         <div className="absolute inset-x-0 top-0 h-[38svh] md:inset-0 md:h-auto">
           <img
@@ -88,10 +88,10 @@ export function Manifesto() {
         </div>
 
         <div className="relative z-10 flex h-full flex-col px-4 pt-[36svh] pb-[4.5rem] sm:px-6 md:justify-center md:pt-24 md:pb-28 lg:px-8">
-          <div className="max-w-[min(46rem,52vw)] max-md:max-w-none">
+          <div className="max-w-[min(44rem,46vw)] max-md:max-w-none">
             <p id="manifesto-title" className="flex items-center gap-2 text-micro font-semibold text-goggle uppercase">
-              <Paw className="size-3.5" />
-              The Doogler story
+              <Plate className="size-3.5" />
+              Why CampusPlate
             </p>
             <p className="mt-5 font-display text-manifesto font-medium text-white [perspective:700px]">
               {words.map((w, i) => (
@@ -121,12 +121,12 @@ export function Manifesto() {
         </div>
 
         {/* What we make, on a loop, in the band a studio would usually give to client logos. */}
-        <div className="absolute inset-x-0 bottom-0 z-10 overflow-hidden border-t border-white/10 py-4 md:py-5" aria-label="What we make">
+        <div className="absolute inset-x-0 bottom-0 z-10 overflow-hidden border-t border-white/10 py-4 md:py-5" aria-label="What CampusPlate does">
           <ul className="marquee-track flex w-max gap-10 pr-10 font-mark text-[0.8125rem] font-light tracking-[0.02em] text-white/55 uppercase md:text-[0.9375rem]">
             {[...marquee, ...marquee].map((item, i) => (
               <li key={i} className="flex items-center gap-10 whitespace-nowrap" aria-hidden={i >= marquee.length}>
                 {item}
-                <Paw className="size-3 text-goggle" />
+                <Plate className="size-3 text-goggle" />
               </li>
             ))}
           </ul>

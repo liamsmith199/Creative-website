@@ -1,12 +1,18 @@
-import {useId, useState, type FormEvent} from 'react';
+import {useId, useState, type FormEvent, type MouseEvent} from 'react';
 import {brand, contact} from '../content';
 import {useFitText} from '../hooks/useFitText';
 import {useReveals} from '../hooks/useReveals';
+import {scrollToHash} from '../lib/scroll';
 import {ParallaxImage} from './ParallaxImage';
 
 type Status = 'idle' | 'invalid' | 'sent';
 
-/** Rotating club sticker built around the leash's paw-print tag. */
+const toProcess = (e: MouseEvent<HTMLAnchorElement>) => {
+  e.preventDefault();
+  scrollToHash('#process');
+};
+
+/** Rotating sticker built around the CampusPlate plate badge. */
 function Sticker({className = ''}: {className?: string}) {
   const id = useId();
   return (
@@ -21,7 +27,7 @@ function Sticker({className = ''}: {className?: string}) {
         </text>
       </svg>
       <img
-        src={`${import.meta.env.BASE_URL}media/paw.webp`}
+        src={`${import.meta.env.BASE_URL}media/plate-badge.webp`}
         alt=""
         width={320}
         height={320}
@@ -33,9 +39,9 @@ function Sticker({className = ''}: {className?: string}) {
 }
 
 /**
- * Final beat: the leash, front and centre. On wide screens the scene fills
- * the section with the copy, call to action and form over its empty left
- * half; the club sticker is slapped beside the leash.
+ * Final beat: the app, front and centre. On wide screens the scene fills
+ * the section with the copy, call to action and waitlist form over its empty
+ * left half; the sticker is slapped beside the phones.
  */
 export function Contact() {
   const markRef = useFitText<HTMLSpanElement>();
@@ -54,7 +60,7 @@ export function Contact() {
     const data = new FormData(form);
     const from = String(data.get('email'));
     const body = String(data.get('message'));
-    const subject = encodeURIComponent('My dog wants to be a Doogler');
+    const subject = encodeURIComponent(contact.subject);
     const text = encodeURIComponent(`${body}\n\n— ${from}`);
     window.location.href = `mailto:${brand.email}?subject=${subject}&body=${text}`;
     setStatus('sent');
@@ -66,7 +72,7 @@ export function Contact() {
       <div className="relative md:absolute md:inset-0">
         <ParallaxImage
           src={contact.image}
-          alt="The Google Doogler Baja Dog Leash in bright green, red, yellow and blue stripes with a padded handle and silver clip."
+          alt={contact.imageAlt}
           width={2560}
           height={1434}
           strength={30}
@@ -77,7 +83,8 @@ export function Contact() {
         <Sticker className="absolute top-[10%] right-[5%] rotate-[-8deg] md:top-[12%] md:right-[7%]" />
       </div>
 
-      <div className="relative px-4 pt-6 pb-10 sm:px-6 md:min-h-[100svh] md:pt-28 lg:px-8">
+      {/* Bottom padding on wide screens keeps the form clear of the big wordmark. */}
+      <div className="relative px-4 pt-6 pb-10 sm:px-6 md:min-h-[100svh] md:pt-28 md:pb-[18vw] lg:px-8">
         <div className="max-w-[32rem]" data-reveal>
           <p className="text-micro font-semibold text-white/85 uppercase">{contact.eyebrow}</p>
           <p className="mt-4 font-display text-[clamp(1.5rem,2.6vw,2.25rem)] leading-[1.12] font-medium tracking-[-0.025em]">
@@ -85,12 +92,11 @@ export function Contact() {
           </p>
 
           <a
-            href={brand.shopUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#process"
+            onClick={toProcess}
             className="mt-8 inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 text-nav font-semibold text-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
           >
-            Get the Doogler Leash <span aria-hidden="true">→</span>
+            See how it works <span aria-hidden="true">↑</span>
           </a>
 
           <form noValidate onSubmit={onSubmit} className="mt-8 space-y-3" aria-describedby="contact-status">
@@ -107,12 +113,12 @@ export function Contact() {
               />
             </label>
             <label className="block">
-              <span className="sr-only">Tell us about your dog</span>
+              <span className="sr-only">Your goal</span>
               <textarea
                 name="message"
                 required
                 rows={3}
-                placeholder="Tell us about your dog, or who you're gifting a leash to…"
+                placeholder={contact.formPrompt}
                 onInput={() => status !== 'idle' && setStatus('idle')}
                 className="w-full resize-none rounded-2xl bg-white/14 px-5 py-4 text-body text-white ring-1 ring-white/30 outline-none backdrop-blur-md placeholder:text-white/60 focus:bg-white/20 focus:ring-2 focus:ring-white user-invalid:ring-goggle"
               />
@@ -122,20 +128,20 @@ export function Contact() {
                 type="submit"
                 className="rounded-full bg-goggle px-7 py-4 text-nav font-semibold text-black transition-transform hover:-translate-y-0.5 active:translate-y-0"
               >
-                Join the club
+                {contact.cta}
               </button>
               <a href={`mailto:${brand.email}`} className="text-nav font-medium text-white/90 underline decoration-white/40 underline-offset-4 hover:decoration-white">
                 or write to {brand.email}
               </a>
             </div>
             <p id="contact-status" role="status" className="min-h-[1.25rem] text-[0.8125rem] text-white/90">
-              {status === 'invalid' && 'Add your email and a line about your dog.'}
+              {status === 'invalid' && 'Add your email and a quick note about your goal.'}
               {status === 'sent' && `Your mail app should be open with the message ready. If not, write to ${brand.email}.`}
             </p>
           </form>
         </div>
 
-        <h2 id="contact-title" className="-mx-1 mt-14 leading-none md:absolute md:inset-x-4 md:bottom-6 md:mx-0 lg:inset-x-6" aria-label="Good dog">
+        <h2 id="contact-title" className="-mx-1 mt-14 leading-none md:absolute md:inset-x-4 md:bottom-6 md:mx-0 lg:inset-x-6" aria-label={contact.wordmark}>
           <span
             ref={markRef}
             aria-hidden="true"

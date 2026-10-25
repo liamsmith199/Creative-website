@@ -1,12 +1,9 @@
-/** Four toes and a pad, after the leash's tag. Drawn, not an icon font, so it inherits currentColor. */
-export function Paw({className = ''}: {className?: string}) {
+/** A plate seen from above, with a leaf for the food. Drawn, not an icon font, so it inherits currentColor. */
+export function Plate({className = ''}: {className?: string}) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" className={className} fill="currentColor">
-      <ellipse cx="8" cy="12.5" rx="3" ry="3.8" transform="rotate(-18 8 12.5)" />
-      <ellipse cx="13" cy="7" rx="3" ry="3.9" />
-      <ellipse cx="19" cy="7" rx="3" ry="3.9" />
-      <ellipse cx="24" cy="12.5" rx="3" ry="3.8" transform="rotate(18 24 12.5)" />
-      <path d="M16 14.5c-3.6 0-8 5.4-8 9.4 0 2.6 2.1 3.6 4.4 3.1 1.4-.3 2.4-.9 3.6-.9s2.2.6 3.6.9c2.3.5 4.4-.5 4.4-3.1 0-4-4.4-9.4-8-9.4Z" />
+      <path d="M16 2.5a13.5 13.5 0 1 0 0 27 13.5 13.5 0 0 0 0-27Zm0 3a10.5 10.5 0 1 1 0 21 10.5 10.5 0 0 1 0-21Z" />
+      <path d="M10.2 20.6c-.4-5.6 3.6-9.6 11.4-9.8.2 7.6-3.9 11.6-9.6 11.2l3.9-4.5-.6-.5-4.6 4.2-.5-.6Z" />
     </svg>
   );
 }

@@ -1,4 +1,5 @@
 import {useEffect} from 'react';
+import {Audience} from './components/Audience';
 import {Contact} from './components/Contact';
 import {Footer} from './components/Footer';
 import {Header} from './components/Header';
@@ -22,6 +23,7 @@ export default function App() {
         <Manifesto />
         <Services />
         <Process />
+        <Audience />
         <Contact />
       </main>
       <Footer />

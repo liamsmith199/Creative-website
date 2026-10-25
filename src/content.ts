@@ -1,6 +1,6 @@
 /**
- * Every word on the page lives here. Relaunch copy for the Google Doogler
- * Baja Dog Leash, written for first-time city dog parents.
+ * Every word on the page lives here. CampusPlate: an AI nutrition tracker
+ * for college students, built from the MKTG 1101 Marketing Venture Workspace.
  */
 
 // Public assets resolve under the GitHub Pages project path (vite.config.ts `base`).
@@ -10,33 +10,33 @@ const base = import.meta.env.BASE_URL;
 type Scene = {image: string; scrub?: {dir: string; count: number}};
 
 export const brand = {
-  name: 'Doogler',
-  wordmark: 'DOOGLER',
-  tagline: ['The Baja Dog Leash.', 'Made for city walks.', 'Every dog is a Doogler.'],
-  email: 'hello@doogler.dog',
-  shopUrl: 'https://shop.merch.google/',
+  name: 'CampusPlate',
+  wordmark: 'CAMPUSPLATE',
+  tagline: ['Snap your meal.', 'Get your macros.', 'Built for students.'],
+  // Waitlist sign-ups go straight to the founder.
+  email: 'liam.smith@student.fairfield.edu',
 };
 
 export const nav = [
-  {label: 'The story', href: '#manifesto'},
-  {label: 'Details', href: '#services'},
-  {label: 'The walk', href: '#process'},
-  {label: 'Get yours', href: '#contact'},
+  {label: 'Why', href: '#manifesto'},
+  {label: 'Features', href: '#services'},
+  {label: 'How it works', href: '#process'},
+  {label: "Who it's for", href: '#audience'},
 ];
 
 export const hero = {
-  caption: 'Google Doogler Baja Dog Leash',
-  scrollHint: 'Scroll for walkies',
+  caption: 'AI nutrition tracking',
+  scrollHint: 'Scroll to explore',
 };
 
-/** The three blocks that stack up beside the leash. */
+/** The three blocks that stack up beside the plate. */
 export const perks = {
-  eyebrow: 'Why dog parents love it',
-  heading: ['Every walk,', 'a little prouder.'],
+  eyebrow: 'Why students use it',
+  heading: ['Snap a photo.', 'Know your macros.'],
   items: [
-    {title: 'Baja stripes that pop', note: 'Bright enough to spot across the dog park.'},
-    {title: 'Padded comfort handle', note: 'Soft in your hand, even on the long loop.'},
-    {title: 'Sturdy swivel clip', note: 'Stays put through every squirrel sighting.'},
+    {title: 'Macros in seconds', note: 'Calories, protein, carbs and fat from one photo.'},
+    {title: 'Dining hall menu match', note: 'Matched to campus menus for more accurate numbers.'},
+    {title: 'Student price', note: '$29.99 a year, with a free plan to start.'},
   ],
 };
 
@@ -46,17 +46,17 @@ export const perks = {
  * read as one sentence.
  */
 export const manifesto: {text: string; em?: boolean}[] = [
-  {text: 'At Google, the dogs come to work too. Inside the company they have a name:'},
-  {text: 'Dooglers.', em: true},
-  {text: 'They nap under desks, crash meetings and lead the lunchtime walk.'},
-  {text: 'Now the leash made for them', em: true},
-  {text: 'is ready for your best friend. Bright Baja stripes, a padded grip and a clip you can trust,'},
-  {text: 'built for city sidewalks', em: true},
-  {text: 'and the dog who owns them. Because every dog who is loved like family'},
-  {text: 'is already a Doogler.', em: true},
+  {text: 'College students want to eat better, build muscle and feel good. But typing every meal into an app takes too long, so most people'},
+  {text: 'quit tracking within weeks.', em: true},
+  {text: 'CampusPlate fixes that. Take a photo of your plate and our AI'},
+  {text: 'breaks it down in seconds:', em: true},
+  {text: 'calories, protein, carbs and fat, matched to your campus dining hall menu. Our mission is'},
+  {text: 'to make healthy eating simple for college students,', em: true},
+  {text: 'so better habits take'},
+  {text: 'one photo, not ten minutes.', em: true},
 ];
 
-export const marquee = ['Baja stripes', 'Padded handle', 'Swivel clip', 'Paw-print tag', 'Gift ready', '#MyDoogler'];
+export const marquee = ['Snap a photo', 'Macros in seconds', 'Dining hall menus', '$29.99 a year', 'Macro-only mode', 'Starting at Fairfield'];
 
 export const services: {
   eyebrow: string;
@@ -64,44 +64,44 @@ export const services: {
   lede: string;
   items: (Scene & {title: string; caption: string; body: string; tags: string[]})[];
 } = {
-  eyebrow: 'The details',
-  heading: 'Made for the walk.',
-  lede: 'Every part of the Doogler Leash is designed for dog parents who walk a lot and post even more.',
+  eyebrow: 'Features',
+  heading: 'Tracking without the typing.',
+  lede: 'Everything a busy student needs to hit their goals, and nothing that slows them down between class, practice and the gym.',
   items: [
     {
-      title: 'Baja stripes',
-      image: `${base}media/story/sv1-stripes.webp`,
-      caption: 'Bright enough for every photo.',
-      body: 'Green, red, yellow and blue woven stripes in Google colors. It stands out on a busy sidewalk and looks great on your feed.',
-      tags: ['Bold color', 'Woven pattern', 'Photo ready'],
+      title: 'Snap and go',
+      image: `${base}media/story/sv1-snap.webp`,
+      caption: 'Point your camera at your meal.',
+      body: 'No searching food databases or weighing portions. Point your camera at your plate, tap once, and CampusPlate does the rest.',
+      tags: ['Photo logging', 'One tap', 'No typing'],
     },
     {
-      title: 'Padded handle',
-      image: `${base}media/story/sv2-handle.webp`,
-      caption: 'Soft grip, long walks.',
-      body: 'A cushioned black handle that stays comfortable on the morning loop, the lunch break walk and the late-night stroll.',
-      tags: ['Comfort', 'No rope burn', 'All-day walks'],
+      title: 'Full macro breakdown',
+      image: `${base}media/story/sv2-macros.webp`,
+      caption: 'Calories, protein, carbs and fat.',
+      body: 'Every meal comes back with calories plus a clear protein, carbs and fat split, so you can see exactly what is on your plate.',
+      tags: ['Calories', 'Protein', 'Carbs + fat'],
     },
     {
-      title: 'Swivel clip',
-      image: `${base}media/story/sv3-clip.webp`,
-      caption: 'Clips on in one click.',
-      body: 'A sturdy metal snap hook that swivels with your dog, so the leash never twists when they spot a squirrel.',
-      tags: ['Metal hardware', 'Swivel', 'Secure'],
+      title: 'Dining hall menu match',
+      image: `${base}media/story/sv3-menu.webp`,
+      caption: 'Matched to the campus menu.',
+      body: 'CampusPlate checks your photo against the dining hall menu for the day, which makes the numbers more accurate for campus food.',
+      tags: ['Campus menus', 'More accurate', 'Fairfield first'],
     },
     {
-      title: 'Paw-print tag',
-      image: `${base}media/story/sv4-tag.webp`,
-      caption: 'The Doogler badge of honor.',
-      body: 'A colorful paw-print label that quietly says your dog is part of the club. Fellow dog parents will ask about it.',
-      tags: ['Signature detail', 'Google colors'],
+      title: 'Macro-only mode',
+      image: `${base}media/story/sv4-macro-mode.webp`,
+      caption: 'Focus on goals, not just calories.',
+      body: 'Hide calories and focus on protein and balanced meals. Built for healthy, non-restrictive habits and goals like building muscle.',
+      tags: ['Protein goals', 'Healthy habits', 'Streaks'],
     },
     {
-      title: 'New Doogler gift',
-      image: `${base}media/story/sv5-gift.webp`,
-      caption: 'The perfect "you got a puppy!" gift.',
-      body: 'Know someone who just adopted? The Doogler Leash is the gift they will use every single day.',
-      tags: ['Gift ready', 'New puppy', 'Starter kit'],
+      title: 'Student pricing',
+      image: `${base}media/story/sv5-price.webp`,
+      caption: '$29.99 a year. Free plan to start.',
+      body: 'Premium trackers charge around $79.99 a year. CampusPlate is $29.99 a year for students, and you can start on the free plan.',
+      tags: ['$29.99 / year', 'Free plan', 'Student budget'],
     },
   ],
 };
@@ -109,43 +109,93 @@ export const services: {
 export const process: {
   eyebrow: string;
   heading: string;
+  goal: number;
+  unit: string;
+  statuses: [number, string][];
   steps: (Scene & {title: string; temp: string; caption: string; body: string})[];
 } = {
   eyebrow: 'How it works',
-  heading: 'Three steps. One happy dog.',
+  heading: 'Three steps. Zero typing.',
+  // The big readout counts up to this meal's calories.
+  goal: 626,
+  unit: 'kcal logged',
+  statuses: [
+    [60, 'Snap'],
+    [250, 'Scanning'],
+    [580, 'Matching menu'],
+    [Infinity, 'Logged'],
+  ],
   steps: [
     {
-      title: 'Clip on',
-      image: `${base}media/story/pr1-clip.webp`,
-      temp: '0 steps',
-      caption: 'Leash on. Tail going.',
-      body: 'One click on the collar and your dog already knows what time it is.',
+      title: 'Snap',
+      image: `${base}media/story/pr1-snap.webp`,
+      temp: '1 photo',
+      caption: 'Point, tap, done.',
+      body: 'Open CampusPlate in the dining hall and take one photo of your plate.',
     },
     {
-      title: 'Head out',
-      image: `${base}media/story/pr2-walk.webp`,
-      temp: '2,500 steps',
-      caption: 'Around the block in style.',
-      body: 'The padded handle keeps you comfortable while the stripes turn heads on every corner.',
+      title: 'Analyze',
+      image: `${base}media/story/pr2-scan.webp`,
+      temp: '~3 seconds',
+      caption: 'AI spots every food.',
+      body: 'Our AI identifies each food, estimates the portion and checks it against the campus menu.',
     },
     {
-      title: 'Show off',
-      image: `${base}media/story/pr3-show.webp`,
-      temp: '5,000 steps',
-      caption: 'Post it with #MyDoogler.',
-      body: 'Snap your pup, tag #MyDoogler and join a community of proud city dog parents.',
+      title: 'Track',
+      image: `${base}media/story/pr3-track.webp`,
+      temp: '626 kcal',
+      caption: 'Your day, at a glance.',
+      body: 'Your calories and macros add up through the day, so you always know where you stand on your goals.',
+    },
+  ],
+};
+
+/** Target market, straight from the venture workspace segmentation. */
+export const audience = {
+  eyebrow: "Who it's for",
+  heading: 'Built for students who care about what they eat.',
+  lede: 'We start at Fairfield University, then grow campus by campus through student ambassadors, TikTok and Instagram.',
+  segments: [
+    {
+      label: 'Geographic',
+      title: 'Campus first',
+      body: 'College campuses and nearby student housing, starting with Fairfield University.',
+    },
+    {
+      label: 'Demographic',
+      title: 'Students, 18 to 24',
+      body: 'College students who eat most of their meals in dining halls or on campus.',
+    },
+    {
+      label: 'Psychographic',
+      title: 'Health-minded',
+      body: 'Students who care about health and fitness and want to build muscle or eat more balanced meals, but have no time to log food by hand.',
+    },
+    {
+      label: 'Behavioral',
+      title: 'Gym-goers and past trackers',
+      body: 'Students who work out, track protein or calories, or tried other apps and quit because logging took too long.',
+    },
+    {
+      label: 'Benefits',
+      title: 'Fast, accurate, affordable',
+      body: 'Photo-based tracking, macro breakdowns, campus menu matching and a student price.',
     },
   ],
 };
 
 export const contact = {
-  eyebrow: 'Join the club',
-  wordmark: 'GOOD DOG',
-  lede: 'Make your dog a Doogler. Get the Baja Dog Leash, or send one to a friend who just got a puppy.',
-  sticker: 'DOOGLER ✺ GOOD DOG CLUB ✺ #MYDOOGLER ✺ ',
+  eyebrow: 'Join the waitlist',
+  wordmark: 'EAT SMART',
+  lede: 'Be one of the first Fairfield students to try CampusPlate. Join the waitlist for early beta access.',
+  cta: 'Join the waitlist',
+  sticker: 'CAMPUSPLATE ✺ SNAP ✺ TRACK ✺ EAT SMART ✺ ',
   image: `${base}media/story/ct-hero.webp`,
+  imageAlt: 'The CampusPlate app showing a salmon and quinoa plate broken down into calories, protein, carbs and fat.',
+  formPrompt: 'Tell us your goal: building muscle, eating more balanced, or just curious…',
+  subject: 'CampusPlate waitlist',
 };
 
 export const footer = {
-  note: 'Every dog is a Doogler. Google Merchandise Store relaunch concept.',
+  note: 'A student venture concept for MKTG 1101 at Fairfield University.',
 };
