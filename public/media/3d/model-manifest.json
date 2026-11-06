@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "venture3d.handoff/1.0",
+  "projectName": "My Venture Project",
+  "modelName": "Doctor Mascot",
+  "modelType": "brand-mascot",
+  "modelVersion": 1,
+  "confirmedAt": "2026-11-04T17:19:40.400Z",
+  "generator": "Venture 3D Studio",
+  "description": "A friendly doctor mascot with spiky dark hair, a white lab coat, mint scrubs and a stethoscope, holding an apple and broccoli.",
+  "sourceNote": "Stylized approximation, hand-built as editable parts during development by looking at the Mission 1 concept image. It is not an automatic image-to-3D reconstruction, and proportions and details are interpreted.",
+  "dimensions": {
+    "width": 59.68,
+    "height": 120.03,
+    "depth": 52.66,
+    "unit": "cm",
+    "center": {
+      "x": 0.0082,
+      "y": 0.6001,
+      "z": -0.0203,
+      "unit": "m"
+    }
+  },
+  "coordinateSystem": {
+    "up": "+Y",
+    "front": "+Z",
+    "units": "metres"
+  },
+  "camera": {
+    "projection": "perspective",
+    "position": [
+      1.0356,
+      0.9916,
+      2.426
+    ],
+    "target": [
+      0.0082,
+      0.6002,
+      -0.0204
+    ],
+    "fovDegrees": 35
+  },
+  "scene": {
+    "backgroundTop": "#f4fcf8",
+    "backgroundBottom": "#d5ebe0",
+    "lighting": "studio",
+    "lightingLabel": "Studio",
+    "lightIntensity": 1,
+    "shadows": true
+  },
+  "hotspots": [],
+  "stats": {
+    "meshes": 118,
+    "triangles": 120764,
+    "embeddedImages": 0
+  },
+  "files": {
+    "model": {
+      "path": "model.glb",
+      "bytes": 3614740,
+      "sha256": "803ba175c1bf24528974cc8030a192441868a48c0dc1e23e3d2d4c15157a8c0a"
+    },
+    "project": {
+      "path": "project.json",
+      "bytes": 126258,
+      "sha256": "4059522fb0aff0b3819bb76600c37c0ca0bbc25a67e38e5d887afef7921e3e9c"
+    },
+    "preview": {
+      "path": "preview.png",
+      "bytes": 208366,
+      "sha256": "c5730d8399e71468011758f5d2d5116984b2608848c6533fdab3d91211f8dbec"
+    },
+    "readme": {
+      "path": "README.txt"
+    }
+  }
+}
