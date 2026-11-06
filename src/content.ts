@@ -29,7 +29,23 @@ export const hero = {
   scrollHint: 'Scroll to explore',
 };
 
-/** The three blocks that stack up beside the plate. */
+/**
+ * The confirmed 3D mascot from Mission 2 (public/media/3d/, refreshed with
+ * `npm run import-model`). The description comes from its handoff manifest.
+ */
+export const mascot = {
+  model: `${base}media/3d/model.glb`,
+  manifest: `${base}media/3d/model-manifest.json`,
+  preview: `${base}media/3d/preview.png`,
+  alt: 'The CampusPlate doctor mascot: a friendly cartoon doctor with spiky dark hair, a white lab coat, mint scrubs and a stethoscope, holding an apple and broccoli.',
+  instructions: 'Interactive 3D. Drag or use the arrow keys to turn it, and plus or minus to zoom.',
+  hint: 'Drag to turn',
+  controlsLabel: '3D mascot view controls',
+  loading: 'Loading 3D mascot',
+  fallback: 'Static preview · 3D is not available on this device',
+};
+
+/** The three blocks that stack up beside the mascot. */
 export const perks = {
   eyebrow: 'Why students use it',
   heading: ['Snap a photo.', 'Know your macros.'],

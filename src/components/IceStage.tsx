@@ -2,14 +2,15 @@ import {useEffect, useRef, type PointerEvent} from 'react';
 import {brand, hero, perks} from '../content';
 import {useFitText} from '../hooks/useFitText';
 import {useReducedMotion} from '../hooks/useReducedMotion';
-import {clamp, easeInQuad, easeOutCubic, lerp, pinProgress, range, smoothstep} from '../lib/math';
+import {clamp, easeInQuad, easeOutCubic, pinProgress, range} from '../lib/math';
 import {onFrame} from '../lib/scroll';
+import {HeroMascot, type HeroMascotHandle} from './HeroMascot';
 
 /**
  * Pinned hero. One scroll range drives the whole beat:
  *
  *   0.00 – 0.13  wordmark letters drop out of frame, left to right
- *   0.04 – 0.56  the plate and phone swing, shrink and slide aside (canvas)
+ *   0.04 – 0.56  the 3D mascot shrinks and slides aside (HeroMascot)
  *   0.52 – 0.72  "Snap a photo. Know your macros." rises, then three frosted blocks swing in,
  *                thaw and catch a glint, then drift apart as you keep going
  *   last 100vh   the black manifesto sheet rises over the stage while the
@@ -38,34 +39,10 @@ const TUMBLE = [-14, 9, -6, 12, 0, -10, 7, -12, 11];
 
 const COBALT = '#0B7A4B'; // CampusPlate green
 
-/** Hero cut-out of the plate and phone, painted to the canvas every frame it moves. */
-const LEASH_SRC = `${import.meta.env.BASE_URL}media/hero-plate.webp`;
-
-/**
- * Paints the plate and phone, in CSS pixels, into whatever transform `ctx` already
- * has. At t = 0 it hangs centred and large; by t = 1 it has swung, shrunk and
- * slid aside (right on wide screens, down on phones) to make room for copy.
- */
-function drawScene(ctx: CanvasRenderingContext2D, vw: number, vh: number, img: HTMLImageElement, t: number) {
+/** The green ground behind the mascot, painted to the canvas so the sheet transition can blur it cheaply. */
+function drawGround(ctx: CanvasRenderingContext2D, vw: number, vh: number) {
   ctx.fillStyle = COBALT;
   ctx.fillRect(0, 0, vw, vh);
-  const wide = vw >= 768;
-  const e = smoothstep(t);
-  const ratio = img.naturalHeight / img.naturalWidth;
-  // Cap by height too, so the picture never runs into the wordmark or header.
-  const base = Math.min(wide ? Math.min(vw * 0.6, vh * 1.5) : vw * 0.9, (vh * (wide ? 0.58 : 0.34)) / ratio);
-  const w = base * lerp(1, wide ? 0.82 : 0.86, e);
-  const h = w * ratio;
-  const cx = vw * lerp(0.5, wide ? 0.72 : 0.5, e);
-  const cy = vh * lerp(wide ? 0.42 : 0.44, wide ? 0.5 : 0.76, e);
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(((lerp(-9, 5, e) + Math.sin(t * Math.PI * 3) * 2) * Math.PI) / 180);
-  ctx.shadowColor = 'rgba(0, 40, 20, 0.3)';
-  ctx.shadowBlur = 30;
-  ctx.shadowOffsetY = 18;
-  ctx.drawImage(img, -w / 2, -h / 2, w, h);
-  ctx.restore();
 }
 
 /** Pointer tilt for the ice blocks — fine pointers only, eased by CSS. */
@@ -99,19 +76,8 @@ export function IceStage() {
   const reducedRef = useRef(reduced);
   reducedRef.current = reduced;
 
-  const picture = useRef<HTMLImageElement | undefined>(undefined);
+  const mascotRef = useRef<HeroMascotHandle>(null);
   const dirty = useRef(true);
-
-  // One picture, loaded once.
-  useEffect(() => {
-    const img = new Image();
-    img.decoding = 'async';
-    img.src = LEASH_SRC;
-    img.onload = () => {
-      picture.current = img;
-      dirty.current = true;
-    };
-  }, []);
 
   // Keep the canvas backing store in step with its CSS size.
   useEffect(() => {
@@ -143,13 +109,13 @@ export function IceStage() {
     let lastFrame = -1;
     let lastBlur = -1;
 
-    const paint = (img: HTMLImageElement, t: number, blur: number) => {
+    const paint = (blur: number) => {
       const vw = canvas.clientWidth;
       const vh = canvas.clientHeight;
       if (blur < 0.001) {
         const dpr = canvas.width / Math.max(1, vw);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        drawScene(ctx, vw, vh, img, t);
+        drawGround(ctx, vw, vh);
         return;
       }
       const k = 1 + blur * 11;
@@ -160,7 +126,7 @@ export function IceStage() {
         lo.height = lh;
       }
       loCtx.setTransform(lw / vw, 0, 0, lh / vh, 0, 0);
-      drawScene(loCtx, vw, vh, img, t);
+      drawGround(loCtx, vw, vh);
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
@@ -178,7 +144,7 @@ export function IceStage() {
       const {p, rect, vh} = pinProgress(root);
       if (rect.bottom < 0) return;
 
-      // The playhead eases towards the scroll position, so the plate glides
+      // The playhead eases towards the scroll position, so the mascot glides
       // rather than jumping when the wheel is flicked.
       const target = range(p, ...T.frames);
       const diff = target - playhead;
@@ -193,9 +159,13 @@ export function IceStage() {
       const sheetStart = 1 - vh / Math.max(1, rect.height - vh);
       const x = range(p, sheetStart, 1);
 
-      const img = picture.current;
-      if (img && (dirty.current || playhead !== lastFrame || Math.abs(x - lastBlur) > 0.0005)) {
-        paint(img, playhead, x);
+      // The mascot stands on the wordmark's cap line, its feet just behind the letters.
+      const mark = markRef.current?.getBoundingClientRect();
+      const floor = mark ? mark.top + mark.height * 0.3 : vh * 0.8;
+      mascotRef.current?.place(playhead, x, canvas.clientWidth, canvas.clientHeight, floor);
+
+      if (dirty.current || playhead !== lastFrame || Math.abs(x - lastBlur) > 0.0005) {
+        paint(x);
         lastFrame = playhead;
         lastBlur = x;
         dirty.current = false;
@@ -272,11 +242,12 @@ export function IceStage() {
       <div className="sticky top-0 h-screen-s overflow-hidden bg-cobalt">
         <div ref={sceneRef} className="absolute inset-0 origin-[50%_70%]">
           <canvas ref={canvasRef} className="absolute inset-0 size-full" aria-hidden="true" />
+          <HeroMascot ref={mascotRef} />
 
           {/* Perks — top on phones, left column on wider screens. */}
           <div
             ref={perksRef}
-            className="absolute inset-x-4 top-[11svh] sm:inset-x-6 md:top-1/2 md:right-auto md:left-[5vw] md:w-[min(38rem,46vw)] md:-translate-y-[54%]"
+            className="pointer-events-none absolute inset-x-4 top-[11svh] sm:inset-x-6 md:top-1/2 md:right-auto md:left-[5vw] md:w-[min(38rem,46vw)] md:-translate-y-[54%]"
           >
             <p ref={eyebrowRef} className="text-micro font-semibold text-white/80 uppercase opacity-0">
               {perks.eyebrow}
